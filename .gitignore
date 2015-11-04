@@ -1,0 +1,7 @@
+.DS_Store
+node_modules
+build
+config.js
+src/server/config.js
+deploy/etc/nginx.conf
+deploy
