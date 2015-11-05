@@ -1,9 +1,9 @@
-import ExtractTextPlugin from 'extract-text-webpack-plugin';
 import autoprefixer from 'autoprefixer';
+import config from '../src/server/config';
 import constants from './constants';
+import ExtractTextPlugin from 'extract-text-webpack-plugin';
 import path from 'path';
 import webpack from 'webpack';
-import config from '../src/server/config';
 
 const loaders = {
   'css': '',

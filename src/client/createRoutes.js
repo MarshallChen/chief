@@ -1,8 +1,8 @@
-import React from 'react';
-import {IndexRoute, Route} from 'react-router';
 import App from './app/app.react';
 import Home from './home/Page.react';
 import NotFound from './notfound/Page.react';
+import React from 'react';
+import {IndexRoute, Route} from 'react-router';
 
 export default function createRoutes(getState) {
 

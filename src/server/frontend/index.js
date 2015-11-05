@@ -2,12 +2,14 @@ import favicon from 'serve-favicon';
 import compression from 'compression';
 import cors from 'cors';
 import bodyParser from 'body-parser';
-import express from 'express';
-import render from './render';
-import device from 'express-device';
-import cookieParser from 'cookie-parser';
-import universal from '../lib/universal';
 import config from '../config';
+import cookieParser from 'cookie-parser';
+import device from 'express-device';
+import express from 'express';
+import graphqlHTTP from 'express-graphql';
+import render from './render';
+import schema from '../lib/schema';
+import universal from '../lib/universal';
 
 const app = express();
 
@@ -19,6 +21,8 @@ app.use(compression());
 app.use('/_assets', express.static('build', { maxAge: '200d' }));
 app.use('/assets', express.static('assets', {maxAge: '200d' }));
 app.use(favicon('assets/img/favicon.ico'));
+
+app.use('/graphql', graphqlHTTP({ schema: schema, graphiql: true }));
 
 // Load state extras for current user.
 app.use(device.capture());

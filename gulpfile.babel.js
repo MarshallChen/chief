@@ -1,22 +1,17 @@
 /**
  * @author marshall@nashangban.com
- * first make sure your node.js version >= 0.12.0 which was --harmony by default or use iojs
- * then `npm install -g gulp`
- * `gulp` run locally with hot reload
- * `gulp -p ` run production version
- * currently karma test and karma server doesn't make any sense, so ignore it :(
  */
 
 import bg from 'gulp-bg';
+import config from './src/server/config';
 import eslint from 'gulp-eslint';
 import gulp from 'gulp';
 import gutil from 'gulp-util';
+import mocha from 'gulp-mocha';
 import path from 'path';
 import runSequence from 'run-sequence';
-import webpackBuild from './webpack/build';
-import mocha from 'gulp-mocha';
 import shell from 'gulp-shell';
-import config from './src/server/config';
+import webpackBuild from './webpack/build';
 
 const runEslint = () => {
   return gulp.src([

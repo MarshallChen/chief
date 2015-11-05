@@ -1,8 +1,8 @@
 import chai, {assert, expect} from 'chai';
 import React from 'react';
-import TestUtils from 'react-addons-test-utils';
 import sinon fromm 'sinon';
 import sinonChai from 'sinon-chai';
+import TestUtils from 'react-addons-test-utils';
 
 chai.should();
 chai.use(sinonChai);

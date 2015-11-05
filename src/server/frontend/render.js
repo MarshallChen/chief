@@ -1,18 +1,18 @@
+import config from '../config';
+import configureStore from '../../shares/configureStore';
+import createRoutes from '../../client/createRoutes';
 import DocumentTitle from 'react-document-title';
 import Html from './html.react';
 import Promise from 'bluebird';
 import React from 'react';
 import ReactDOMServer from 'react-dom/server';
-import config from '../config';
-import configureStore from '../../shares/configureStore';
-import createRoutes from '../../client/createRoutes';
 import serialize from 'serialize-javascript';
 import stateMerger from '../lib/merger';
 import useragent from 'useragent';
+import { createMemoryHistory } from 'history';
 import { IntlProvider } from 'react-intl';
 import { Provider } from 'react-redux';
 import { RoutingContext, match } from 'react-router';
-import { createMemoryHistory } from 'history';
 
 const { webpack: { hotReloadPort }} = config;
 

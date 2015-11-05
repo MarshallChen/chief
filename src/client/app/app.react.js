@@ -2,10 +2,10 @@ import './app.css';
 import './app.less';
 import './app.styl';
 import Component from 'react-pure-render/component';
-import React, { PropTypes } from 'react';
-import RouterHandler from '../../shares/components/RouterHandler.react';
 import mapDispatchToProps from '../../shares/app/mapDispatchToProps';
 import mapStateToProps from '../../shares/app/mapStateToProps';
+import React, { PropTypes } from 'react';
+import RouterHandler from '../../shares/components/RouterHandler.react';
 import { connect } from 'react-redux';
 
 @connect(mapStateToProps, mapDispatchToProps)

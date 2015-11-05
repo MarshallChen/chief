@@ -1,5 +1,5 @@
-import Notification from 'rc-notification';
 import classNames from 'classnames';
+import Notification from 'rc-notification';
 
 export function popupNotification(component) {
   return (error, type) => {
