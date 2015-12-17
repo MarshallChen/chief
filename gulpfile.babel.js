@@ -4,6 +4,7 @@
 
 import bg from 'gulp-bg';
 import config from './src/server/config';
+import del from 'del';
 import eslint from 'gulp-eslint';
 import gulp from 'gulp';
 import gutil from 'gulp-util';
@@ -23,6 +24,7 @@ const runEslint = () => {
   .pipe(eslint.format());
 };
 
+gulp.task('clean', done => del('build/*', done));
 gulp.task('build-webpack', webpackBuild);
 gulp.task('build', ['build-webpack']);
 
@@ -62,7 +64,7 @@ gulp.task('server', done => {
   if (config.webpack.hotReload) {
     runSequence('server-hot', 'server-nodemon', done);
   } else {
-    runSequence('build', 'server-node', done);
+    runSequence('clean', 'build', 'server-node', done);
   }
 });
 

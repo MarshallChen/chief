@@ -1,7 +1,7 @@
 import classNames from 'classnames';
 import Notification from 'rc-notification';
 
-export function popupNotification(component) {
+export default function popupNotification(component) {
   return (error, type) => {
     if (error instanceof ServerError) {
       if (!error.code) return;

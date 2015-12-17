@@ -9,7 +9,7 @@ import ReactDOMServer from 'react-dom/server';
 import serialize from 'serialize-javascript';
 import stateMerger from '../lib/merger';
 import useragent from 'useragent';
-import { createMemoryHistory } from 'history';
+import { createMemoryHistory, useQueries } from 'history';
 import { IntlProvider } from 'react-intl';
 import { Provider } from 'react-redux';
 import { RoutingContext, match } from 'react-router';
@@ -20,14 +20,14 @@ export default function render(req, res, next) {
   const initialState = {
     device: {
       isMobile: ['phone', 'tablet'].indexOf(req.device.type) > -1
-    }
+    },
+    user: req.user
   };
   const store = configureStore({ initialState });
-
   const routes = createRoutes(() => store.getState());
-  const location = createMemoryHistory().createLocation(req.url);
+  const location = useQueries(createMemoryHistory)().createLocation(req.url);
 
-  match({ routes, location }, (error, redirectLocation, renderProps) => {
+  match({ routes, location }, async (error, redirectLocation, renderProps) => {
 
     if (redirectLocation) {
       res.redirect(301, redirectLocation.pathname + redirectLocation.search);
@@ -39,38 +39,45 @@ export default function render(req, res, next) {
       return;
     }
 
-    fetchComponentData(store.dispatch, req, renderProps)
-      .then(() => renderPage(store, renderProps, req))
-      .then(html => res.send(html))
-      .catch(next);
+    try {
+      await fetchComponentDataAsync(store.dispatch, req, renderProps);
+      const html = await renderPageAsync(store, renderProps, req);
+      res.send(html);
+    } catch (e) {
+      next(e);
+    }
   });
 }
 
-function fetchComponentData(dispatch, req, { components, location, params }) {
+async function fetchComponentDataAsync(dispatch, req, { components, location, params }) {
+  const { cookies: { sid }} = req;
   const fetchActions = components.reduce((actions, component) => {
-    return actions.concat(component.fetchAction || []);
+    return actions.concat(component.fetchActions || []);
   }, []);
-  const promises = fetchActions.map(action => dispatch(action({ location, params })));
+  const promises = fetchActions.map(action => {
+    return dispatch(action({ location, params, sid }));
+  });
 
-  return Promise.all(promises).then(results => {
-    results.forEach(result => {
-      if (result.error)
-        throw result.payload;
-    })
-  })
+  const results = await Promise.all(promises);
+
+  results.forEach(result => {
+    if (result.error)
+      throw result.payload;
+  });
 }
 
-function renderPage(store, renderProps, req) {
+async function renderPageAsync(store, renderProps, req) {
 
   const clientState = store.getState();
   const { headers, hostname } = req;
   const appHtml = getAppHtml(store, renderProps);
   const scriptHtml = getScriptHtml(clientState, headers, hostname);
+  const title = DocumentTitle.peek();
 
   return '<!DOCTYPE html>' + ReactDOMServer.renderToStaticMarkup(
     <Html
       bodyHtml={`<div id="app">${appHtml}</div>${scriptHtml}`}
-      title={DocumentTitle.rewind()}
+      title={title}
     />
   );
 

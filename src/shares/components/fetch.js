@@ -1,7 +1,7 @@
 import Component from 'react-pure-render/component';
 import React, { PropTypes } from 'react';
 
-export default function fetch(action) {
+export default function fetch(...actions) {
 
   return Wrapped => class Fetch extends Component {
 
@@ -11,11 +11,13 @@ export default function fetch(action) {
       params: PropTypes.object
     };
 
-    static fetchAction = action;
+    static fetchActions = actions;
 
     componentDidMount() {
       const {dispatch, location, params} = this.props;
-      dispatch(action({location, params}));
+      actions.forEach(action =>
+        dispatch(action({location, params}))
+      );
     }
 
     render() {

@@ -3,7 +3,6 @@ import createLogger from 'redux-logger';
 import fetch from './fetch';
 import injectDependencies from './lib/injectDependencies';
 import promiseMiddleware from 'redux-promise-middleware';
-import stateToJS from './lib/stateToJS';
 import validate from './validate';
 import { applyMiddleware, createStore } from 'redux';
 import { debug } from '../server/config';
@@ -11,14 +10,19 @@ import { debug } from '../server/config';
 export default function configureStore({ engine, initialState }) {
 
   const dependenciesMiddleware = injectDependencies({ fetch }, { validate });
-  const middleware = [ dependenciesMiddleware, promiseMiddleware ];
+  const middleware = [
+    dependenciesMiddleware,
+    promiseMiddleware({
+      promiseTypeSuffixes: ['START', 'SUCCESS', 'ERROR']
+    })
+  ];
 
   const loggerEnabled = debug || process.env.IS_BROWSER;
 
   if (loggerEnabled) {
     const logger = createLogger({
       collapsed: true,
-      transformer: stateToJS
+      stateTransformer: state => JSON.parse(JSON.stringify(state))
     });
     middleware.push(logger);
   }
