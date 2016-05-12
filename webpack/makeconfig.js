@@ -4,10 +4,11 @@ import constants from './constants';
 import ExtractTextPlugin from 'extract-text-webpack-plugin';
 import path from 'path';
 import webpack from 'webpack';
+import themeVars from '../src/client/app/theme.js';
 
 const loaders = {
   'css': '',
-  'less': '!less-loader',
+  'less': `!less-loader?${JSON.stringify(themeVars)}`,
   'scss': '!sass-loader',
   'sass': '!sass-loader?indentedSyntax',
   'styl': '!stylus-loader'
@@ -48,30 +49,18 @@ export default function makeConfig() {
         loader: 'url-loader?limit=100000',
         test: /\.(gif|jpg|png|woff|woff2|eot|ttf|svg)$/
       }, {
+        test: /\.js$/,
         exclude: /node_modules/,
         loader: 'babel',
         query: {
-          stage: 0,
+          plugins: ['transform-runtime', 'add-module-exports', ['antd', { style: true }]],
+          presets: ['es2015', 'react', 'stage-0'],
           env: {
             development: {
-              // react-transform belongs to webpack config only, not to .babelrc
-              plugins: ['react-transform'],
-              extra: {
-                'react-transform': {
-                  transforms: [{
-                    transform: 'react-transform-hmr',
-                    imports: ['react'],
-                    locals: ['module']
-                  }, {
-                    transform: 'react-transform-catch-errors',
-                    imports: ['react', 'redbox-react']
-                  }]
-                }
-              }
+              presets: ['react-hmre']
             }
           }
-        },
-        test: /\.js$/
+        }
       }].concat(stylesLoaders())
     },
     output: {
@@ -83,7 +72,8 @@ export default function makeConfig() {
       const plugins = [
         new webpack.DefinePlugin({
           'process.env': {
-            IS_BROWSER: true
+            IS_BROWSER: true,
+            NODE_ENV: `"${process.env.NODE_ENV || 'development'}"`
           }
         })
       ];

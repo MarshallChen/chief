@@ -5,3 +5,4 @@ config.js
 src/server/config.js
 deploy/etc/nginx.conf
 deploy
+npm-debug.log

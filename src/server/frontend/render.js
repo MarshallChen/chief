@@ -9,10 +9,9 @@ import ReactDOMServer from 'react-dom/server';
 import serialize from 'serialize-javascript';
 import stateMerger from '../lib/merger';
 import useragent from 'useragent';
-import { createMemoryHistory, useQueries } from 'history';
 import { IntlProvider } from 'react-intl';
 import { Provider } from 'react-redux';
-import { RoutingContext, match } from 'react-router';
+import { RouterContext, createMemoryHistory, match } from 'react-router';
 
 const { webpack: { hotReloadPort }} = config;
 
@@ -25,7 +24,7 @@ export default function render(req, res, next) {
   };
   const store = configureStore({ initialState });
   const routes = createRoutes(() => store.getState());
-  const location = useQueries(createMemoryHistory)().createLocation(req.url);
+  const location = createMemoryHistory().createLocation(req.url);
 
   match({ routes, location }, async (error, redirectLocation, renderProps) => {
 
@@ -87,7 +86,7 @@ function getAppHtml(store, renderProps) {
   return ReactDOMServer.renderToString(
     <Provider store={store}>
       <IntlProvider>
-        <RoutingContext {...renderProps} />
+        <RouterContext {...renderProps} />
       </IntlProvider>
     </Provider>
   );

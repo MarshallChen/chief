@@ -8,8 +8,7 @@ import React, { PropTypes } from 'react';
 import RouterHandler from '../../shares/components/RouterHandler.react';
 import { connect } from 'react-redux';
 
-@connect(mapStateToProps, mapDispatchToProps)
-export default class App extends Component {
+class App extends Component {
 
   static propTypes = {
     children: PropTypes.object.isRequired,
@@ -21,11 +20,11 @@ export default class App extends Component {
   render() {
     return (
       <div className="page">
-        <div>Header</div>
         <RouterHandler {...this.props} />
-        <div>Footer</div>
       </div>
     );
   }
 
 }
+
+export default connect(mapStateToProps, mapDispatchToProps)(App);

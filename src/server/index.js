@@ -8,7 +8,7 @@ if (global.Intl) {
   global.Intl = require('intl');
 }
 
-require('babel/register')({ optional: ['es7'] });
+require('babel-register');
 
 config.webpack.stylesExtensions.forEach(function(ext) {
   require.extensions['.' + ext] = function() {};
